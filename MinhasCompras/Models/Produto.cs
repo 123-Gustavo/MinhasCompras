@@ -10,6 +10,7 @@ namespace MinhasCompras.Models
     public class Produto
     {
         String _descricao;
+        String _categoria;
         double _quantidade;
         double _preco;
 
@@ -24,6 +25,18 @@ namespace MinhasCompras.Models
                 }
 
                 _descricao = value;
+            }
+        }
+        public string Categoria {
+            get { return _categoria; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new Exception("Por favor, preencha a categoria");
+                }
+
+                _categoria = value;
             }
         }
         public double Quantidade { 

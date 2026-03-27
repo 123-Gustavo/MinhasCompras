@@ -17,12 +17,14 @@ public partial class NovoProduto : ContentPage
             Produto p = new Produto
             {
                 Descricao = txt_descricao.Text,
+                Categoria = txt_categoria.Text,
                 Quantidade = double.Parse(txt_quantidade.Text),
                 Preco = double.Parse(txt_preco.Text)
             };
 
             await App.Db.Insert(p);
             await DisplayAlert("Sucesso", "Produto cadastrado com sucesso!", "OK");
+            await Navigation.PopAsync();
 
         }
         catch (Exception ex)

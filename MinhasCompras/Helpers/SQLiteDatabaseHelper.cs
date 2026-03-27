@@ -36,5 +36,12 @@ namespace MinhasCompras.Helpers
             return _conn.QueryAsync<Produto>(sql);
         }
 
+        public Task<List<Produto>> SearchCategoria(string q)
+        {
+            string sql = "SELECT * FROM Produto WHERE categoria LIKE '%" + q + "%'";
+
+            return _conn.QueryAsync<Produto>(sql);
+        }
+
     }
 }

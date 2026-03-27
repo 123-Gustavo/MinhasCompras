@@ -1,4 +1,5 @@
 ﻿using MinhasCompras.Helpers;
+using System.Globalization;
 
 namespace MinhasCompras
 {
@@ -28,6 +29,8 @@ namespace MinhasCompras
         public App()
         {
             InitializeComponent();
+
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("pt-BR");
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

@@ -61,6 +61,7 @@ public partial class ListaProduto : ContentPage
         try {
 
             string q = e.NewTextValue;
+            lst_produtos.IsRefreshing = true;
 
             if (string.IsNullOrWhiteSpace(q))
             {
@@ -78,16 +79,30 @@ public partial class ListaProduto : ContentPage
         catch (Exception ex)
         {
             await DisplayAlert("Erro", ex.Message, "OK");
+        }finally
+        {
+            lst_produtos.IsRefreshing = false;
         }
     }
 
     private void ToolbarItem_Clicked_1(object sender, EventArgs e)
     {
-        double soma = lista.Sum(i => i.Total);
+        var grupos = lista
+        .GroupBy(p => p.Categoria)
+        .Select(g => new
+        {
+            Categoria = g.Key,
+            Total = g.Sum(p => p.Total)
+        });
 
-        string msg = $"O total é {soma:C}";
+        string msg = "";
 
-        DisplayAlert("Total", msg, "OK");
+        foreach (var item in grupos)
+        {
+            msg += $"{item.Categoria}: {item.Total:C}\n";
+        }
+
+        DisplayAlert("Total por Categoria", msg, "OK");
     }
 
     private async void MenuItem_Clicked(object sender, EventArgs e)
@@ -128,6 +143,56 @@ public partial class ListaProduto : ContentPage
         catch    (Exception ex)
         {
             DisplayAlert("Erro", ex.Message, "OK");
+        }
+    }
+
+    private async void lst_produtos_Refreshing(object sender, EventArgs e)
+    {
+        base.OnAppearing();
+        try
+        {
+
+            await CarregarProdutos();
+
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", ex.Message, "OK");
+        }
+        finally
+        {
+            lst_produtos.IsRefreshing = false;
+        }
+    }
+
+    private async void txt_search_TextChanged_1(object sender, TextChangedEventArgs e)
+    {
+        try
+        {
+
+            string q = e.NewTextValue;
+            lst_produtos.IsRefreshing = true;
+
+            if (string.IsNullOrWhiteSpace(q))
+            {
+                await CarregarProdutos();
+                return;
+            }
+
+            lista.Clear();
+
+            List<Produto> tmp = await App.Db.SearchCategoria(q);
+
+            tmp.ForEach(i => lista.Add(i));
+
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", ex.Message, "OK");
+        }
+        finally
+        {
+            lst_produtos.IsRefreshing = false;
         }
     }
 }
